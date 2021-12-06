@@ -31,16 +31,16 @@ public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
     public TwitterProducer()  {
-        Properties props = new Properties();
+        var props = new Properties();
         try {
             props.load(TwitterProducer.class.getClassLoader().getResourceAsStream("twitter.properties"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String consumerKey = props.getProperty("consumerKey");
-        String consumerSecret = props.getProperty("consumerSecret");
-        String accessToken = props.getProperty("accessToken");
-        String accessTokenSecret = props.getProperty("accessTokenSecret");
+        var consumerKey = props.getProperty("consumerKey");
+        var consumerSecret = props.getProperty("consumerSecret");
+        var accessToken = props.getProperty("accessToken");
+        var accessTokenSecret = props.getProperty("accessTokenSecret");
         System.setProperty("twitter4j.oauth.consumerKey", consumerKey);
         System.setProperty("twitter4j.oauth.consumerSecret", consumerSecret);
         System.setProperty("twitter4j.oauth.accessToken", accessToken);
@@ -54,12 +54,12 @@ public class TwitterProducer {
         // create a twitter client
         /** Set up your blocking queues: Be sure to size these properly based on expected TPS of your stream */
         BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(1000);
-        Client client = createTwitterClient(msgQueue);
+        var client = createTwitterClient(msgQueue);
 
         client.connect();
 
         // create a kafka producer
-        KafkaProducer<String, String> kafkaProducer = createKafkaProducer();
+        var kafkaProducer = createKafkaProducer();
 
 
         // loop to send tweets to kafka
@@ -92,15 +92,15 @@ public class TwitterProducer {
     public Client createTwitterClient(BlockingQueue<String> msgQueue) {
 
         /** Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
-        Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
-        StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
-        List<String> terms = Lists.newArrayList("harenohi_karin");
+        var hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
+        var hosebirdEndpoint = new StatusesFilterEndpoint();
+        var terms = Lists.newArrayList("churi_p_irm");
         hosebirdEndpoint.trackTerms(terms);
 
-        String consumerKey = System.getProperty("twitter4j.oauth.consumerKey");
-        String consumerSecret = System.getProperty("twitter4j.oauth.consumerSecret");
-        String token = System.getProperty("twitter4j.oauth.accessToken");
-        String secret = System.getProperty("twitter4j.oauth.accessTokenSecret");
+        var consumerKey = System.getProperty("twitter4j.oauth.consumerKey");
+        var consumerSecret = System.getProperty("twitter4j.oauth.consumerSecret");
+        var token = System.getProperty("twitter4j.oauth.accessToken");
+        var secret = System.getProperty("twitter4j.oauth.accessTokenSecret");
         // These secrets should be read from a config file
         Authentication hosebirdAuth = new OAuth1(
                 consumerKey, consumerSecret, token, secret);
@@ -122,9 +122,9 @@ public class TwitterProducer {
 
     }
     public KafkaProducer<String, String> createKafkaProducer() {
-        String bootstrapServers = "127.0.0.1:9092";
+        var bootstrapServers = "127.0.0.1:9092";
         // create Producer properties
-        Properties properties = new Properties();
+        var properties = new Properties();
 
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
