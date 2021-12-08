@@ -31,20 +31,6 @@ public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
     public TwitterProducer()  {
-        var props = new Properties();
-        try {
-            props.load(TwitterProducer.class.getClassLoader().getResourceAsStream("twitter.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        var consumerKey = props.getProperty("consumerKey");
-        var consumerSecret = props.getProperty("consumerSecret");
-        var accessToken = props.getProperty("accessToken");
-        var accessTokenSecret = props.getProperty("accessTokenSecret");
-        System.setProperty("twitter4j.oauth.consumerKey", consumerKey);
-        System.setProperty("twitter4j.oauth.consumerSecret", consumerSecret);
-        System.setProperty("twitter4j.oauth.accessToken", accessToken);
-        System.setProperty("twitter4j.oauth.accessTokenSecret", accessTokenSecret);
     }
 
     public void run() {
@@ -96,14 +82,20 @@ public class TwitterProducer {
         var hosebirdEndpoint = new StatusesFilterEndpoint();
         var terms = Lists.newArrayList("churi_p_irm");
         hosebirdEndpoint.trackTerms(terms);
+        var props = new Properties();
+        try {
+            props.load(TwitterProducer.class.getClassLoader().getResourceAsStream("twitter.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        var consumerKey = props.getProperty("consumerKey");
+        var consumerSecret = props.getProperty("consumerSecret");
+        var accessToken = props.getProperty("accessToken");
+        var accessTokenSecret = props.getProperty("accessTokenSecret");
 
-        var consumerKey = System.getProperty("twitter4j.oauth.consumerKey");
-        var consumerSecret = System.getProperty("twitter4j.oauth.consumerSecret");
-        var token = System.getProperty("twitter4j.oauth.accessToken");
-        var secret = System.getProperty("twitter4j.oauth.accessTokenSecret");
         // These secrets should be read from a config file
         Authentication hosebirdAuth = new OAuth1(
-                consumerKey, consumerSecret, token, secret);
+                consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
 //        new TwitterFactory().getInstance();
 //        twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET_KEY);
