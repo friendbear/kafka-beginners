@@ -33,6 +33,7 @@ public class TwitterProducer {
     public TwitterProducer()  {
     }
 
+    static public List<String> terms = Lists.newArrayList("churi_p_irm", "@churi_p_irm");
     public void run() {
 
         logger.info("Setup");
@@ -48,6 +49,15 @@ public class TwitterProducer {
         var kafkaProducer = createKafkaProducer();
 
 
+        // add a shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("stopping application...");
+            logger.info("shutting down client from twitter...");
+            client.stop();
+            logger.info("closing producer...");
+            kafkaProducer.close();
+            logger.info("done...");
+        }));
         // loop to send tweets to kafka
         // on a different thread, or multiple different threads....
         while (!client.isDone()) {
@@ -64,7 +74,7 @@ public class TwitterProducer {
                     public void onCompletion(RecordMetadata recordMetadata, Exception e) {
 
                         if (e != null) {
-                            logger.error("Something bad happened", e);
+                            logger.error("Something bad happened...", e);
                         }
                     }
                 });
@@ -80,7 +90,6 @@ public class TwitterProducer {
         /** Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
         var hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         var hosebirdEndpoint = new StatusesFilterEndpoint();
-        var terms = Lists.newArrayList("churi_p_irm");
         hosebirdEndpoint.trackTerms(terms);
         var props = new Properties();
         try {
@@ -118,9 +127,17 @@ public class TwitterProducer {
         // create Producer properties
         var properties = new Properties();
 
+        // create Producer properties
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // create safe Producer
+        properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_DOC, "true");
+        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all");
+        properties.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+        //properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+
         //create the producer
         return new KafkaProducer<String, String>(properties);
     }
