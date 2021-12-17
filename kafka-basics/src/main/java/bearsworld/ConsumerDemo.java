@@ -1,4 +1,4 @@
-package org.bearsworld;
+package bearsworld;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

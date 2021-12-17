@@ -1,4 +1,6 @@
 .idea
-src/main/resources/twitter.properties
+kafka-producer-twitter/src/main/resources/twitter.properties
 src/main/resources/twitter.yml
 target/classes
+kafka-basics/target
+kafka-producer-twitter/target
