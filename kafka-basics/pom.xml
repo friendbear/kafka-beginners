@@ -44,8 +44,8 @@
         <!-- https://mvnrepository.com/artifact/org.twitter4j/twitter4j-core -->
     </dependencies>
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <slf4j.version>2.0.0-alpha5</slf4j.version>
     </properties>
 

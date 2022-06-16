@@ -44,3 +44,14 @@ Topic: second_topic	TopicId: _DCN5F7QRjeEQMrfq2-6wg	PartitionCount: 3	Replicatio
 	Topic: second_topic	Partition: 1	Leader: 0	Replicas: 0	Isr: 0
 	Topic: second_topic	Partition: 2	Leader: 0	Replicas: 0	Isr: 0
 ```
+
+# Descrbe topic 
+
+```bsh
+kafka-topics.sh --bootstrap-server localhost:9092 --describe
+
+Topic: twitter_tweets	TopicId: rbDCmF7KTFyuEk_eLjbaKg	PartitionCount: 3	ReplicationFactor: 1	Configs: cleanup.policy=delete,segment.bytes=1073741824
+	Topic: twitter_tweets	Partition: 0	Leader: 0	Replicas: 0	Isr: 0
+	Topic: twitter_tweets	Partition: 1	Leader: 0	Replicas: 0	Isr: 0
+	Topic: twitter_tweets	Partition: 2	Leader: 0	Replicas: 0	Isr: 0
+```
