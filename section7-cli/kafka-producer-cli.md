@@ -49,7 +49,7 @@ bsh ✗  kafka-console-producer --bootstrap-server localhost:9092 --topic first_
 >^C
 
 
-
+```bsh
 [main] INFO bearsworld.ConsumerDemo - Key: null, Value: ajaaa
 [main] INFO bearsworld.ConsumerDemo - Partition: 1
 [main] INFO bearsworld.ConsumerDemo - Key: null, Value: 1,2,3
@@ -60,3 +60,30 @@ bsh ✗  kafka-console-producer --bootstrap-server localhost:9092 --topic first_
 [main] INFO bearsworld.ConsumerDemo - Partition: 0
 ```
 
+
+## option  
+
+--property parse.key=true --property parse.key=true --property key.separator=:
+
+---
+```sh
+bsh ✗  kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic --property parse.key=true --property perse.key= true --property key.separator=:
+>key: name ,{ data: { name: "hoge" }
+>example key: [ { name: "hoge" } , { name: "huga" } ]
+
+
+[main] INFO bearsworld.ConsumerDemo - Key: key, Value:  name ,{ data: { name: "hoge" }
+[main] INFO bearsworld.ConsumerDemo - Partition: 1
+[main] INFO bearsworld.ConsumerDemo - Key: example key, Value:  [ { name: "hoge" } , { name: "huga" } ]
+[main] INFO bearsworld.ConsumerDemo - Partition: 2
+```
+
+```sh
+bsh ✗  kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic --property parse.key=true --property perse.key= true --property key.separator=:
+>example key: test
+>key 2: data2
+```
+> [main] INFO bearsworld.ConsumerDemo - Key: example key, Value:  test
+[main] INFO bearsworld.ConsumerDemo - Partition: 2
+[main] INFO bearsworld.ConsumerDemo - Key: key 2, Value:  data2
+[main] INFO bearsworld.ConsumerDemo - Partition: 2
