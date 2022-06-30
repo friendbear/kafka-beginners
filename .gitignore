@@ -9,3 +9,4 @@ kafka-producer-twitter/target
 kafka-producer-wikimedia/.gradle
 kafka-producer-wikimedia/build
 kafka-producer-wikimedia/gradle
+kafka-consumer-opensearch/.gradle
