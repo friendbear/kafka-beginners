@@ -29,7 +29,7 @@ public class TwitterProducer {
     public TwitterProducer()  {
     }
 
-    static public List<String> terms = Lists.newArrayList("churi_p_irm", "@churi_p_irm");
+    static public List<String> terms = Lists.newArrayList("IRIAM");
     public void run() {
 
         logger.info("Setup");

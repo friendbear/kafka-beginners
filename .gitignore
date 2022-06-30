@@ -4,3 +4,8 @@ src/main/resources/twitter.yml
 target/classes
 kafka-basics/target
 kafka-producer-twitter/target
+.DS_Store
+.vscode
+kafka-producer-wikimedia/.gradle
+kafka-producer-wikimedia/build
+kafka-producer-wikimedia/gradle

@@ -32,6 +32,13 @@ public class ConsumerDemoAssignSeek {
 
         // create consumer
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+        // add a shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("stopping application...");
+            consumer.close();
+            logger.info("done...");
+            logger.info("End of Applications.");
+        }));
 
         // assign and seek are mostly used to replay data or fetch a specific message
 
