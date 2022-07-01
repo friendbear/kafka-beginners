@@ -1,5 +1,6 @@
-package bearsworld.demos.kafka.opensearch;
+package opensearch;
 
+import com.google.gson.JsonParser;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -31,6 +32,16 @@ import java.util.Properties;
 
 public class OpenSearchConsumer {
 
+    private static String extractId(String json) {
+
+        return JsonParser.parseString(json)
+                .getAsJsonObject()
+                .get("meta")
+                .getAsJsonObject()
+                .get("id")
+                .getAsString();
+
+    }
     public static void main(String[] args) throws IOException {
 
         Logger log = LoggerFactory.getLogger(OpenSearchConsumer.class.getSimpleName());
@@ -69,10 +80,14 @@ public class OpenSearchConsumer {
 
                 for (ConsumerRecord<String, String> record: records) {
 
+
+                    //String id = record.topic() + "_" + record.partition() + "_" + record.offset();
                     try {
+                        String id = extractId(record.value());
 
                         IndexRequest indexRequest = new IndexRequest("wikimedia")
-                                .source(record.value(), XContentType.JSON);
+                                .source(record.value(), XContentType.JSON)
+                                .id(id);
                         IndexResponse indexResponse = openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
 
                         log.info("Inserted I document into OpenSearch: " + indexResponse.getId());
@@ -130,9 +145,8 @@ public class OpenSearchConsumer {
                             httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
                                     .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy()));
 
-            restHighLevelClient = new RestHighLevelClient(builder);
+           restHighLevelClient = new RestHighLevelClient(builder);
         }
         return restHighLevelClient;
     }
 }
-

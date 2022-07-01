@@ -1,7 +1,6 @@
 plugins {
     id 'java'
 }
-
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -24,7 +23,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
     // https://mvnrepository.com/artifact/com.launchdarkly/okhttp-eventsource
-    implementation group: 'com.launchdarkly', name: 'okhttp-eventsource', version: '2.5.0'
+    implementation group: 'com.launchdarkly', name: 'okhttp-eventsource', version: '2.6.1'
 
     implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.0.0'
 

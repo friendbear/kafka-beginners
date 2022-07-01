@@ -12,3 +12,6 @@ kafka-producer-wikimedia/gradle
 kafka-consumer-opensearch/.gradle
 kafka-consumer-opensearch/build/libs
 kafka-consumer-opensearch/build/tmp
+kafka-consumer-es/target
+kafka-consumer-opensearch/build/classes/java/main/bearsworld/demos/kafka/opensearch/OpenSearchConsumer.class
+kafka-consumer-opensearch/build/classes/java/main/bearsworld/demos/kafka/opensearch/OpenSearchConsumer.class
