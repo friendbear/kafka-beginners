@@ -10,3 +10,5 @@ kafka-producer-wikimedia/.gradle
 kafka-producer-wikimedia/build
 kafka-producer-wikimedia/gradle
 kafka-consumer-opensearch/.gradle
+kafka-consumer-opensearch/build/libs
+kafka-consumer-opensearch/build/tmp
