@@ -56,7 +56,7 @@ public class OpenSearchConsumer {
 
         try (openSearchClient; consumer) {
 
-            boolean indexExists = openSearchClient.indices().exists(new GetIndexRequest("wikimedia"), RequestOptions.DEFAULT);
+            Boolean indexExists = openSearchClient.indices().exists(new GetIndexRequest("wikimedia"), RequestOptions.DEFAULT);
             if (indexExists) {
 
                 log.info("The Wikimedia Index already exists.");
@@ -95,6 +95,10 @@ public class OpenSearchConsumer {
 
                     }
                 }
+
+                consumer.commitSync();;
+
+                log.info("Offsets have been committed!");
             }
         }
 
@@ -116,6 +120,7 @@ public class OpenSearchConsumer {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false"); // 500 par record auto commit => false
 
         return new KafkaConsumer<String, String>(properties);
     }
