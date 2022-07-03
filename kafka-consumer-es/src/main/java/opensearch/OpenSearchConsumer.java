@@ -12,6 +12,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.opensearch.action.bulk.BulkRequest;
+import org.opensearch.action.bulk.BulkResponse;
 import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.index.IndexResponse;
 import org.opensearch.client.RequestOptions;
@@ -66,9 +68,6 @@ public class OpenSearchConsumer {
                 log.info("The Wikimedia Index has been created.");
             }
 
-
-
-
             consumer.subscribe(Collections.singleton("wikimedia.recentchange"));
 
             while (true) {
@@ -77,6 +76,8 @@ public class OpenSearchConsumer {
                 int recordCount = records.count();
 
                 log.info("Received " + recordCount + " records(s)");
+
+                BulkRequest bulkRequest = new BulkRequest();
 
                 for (ConsumerRecord<String, String> record: records) {
 
@@ -88,16 +89,31 @@ public class OpenSearchConsumer {
                         IndexRequest indexRequest = new IndexRequest("wikimedia")
                                 .source(record.value(), XContentType.JSON)
                                 .id(id);
+
+//                        bulkRequest.add(indexRequest);
                         IndexResponse indexResponse = openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
 
-                        log.info("Inserted I document into OpenSearch: " + indexResponse.getId());
+//                        log.info("Inserted I document into OpenSearch: " + indexResponse.getId());
                     } catch (Exception e) {
 
                     }
                 }
+/*
+                if (bulkRequest.numberOfActions() > 0) {
+                    BulkResponse bulkItemResponses = openSearchClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+                    log.info("Inserted " + bulkItemResponses.getItems().length + " record(s)");
+
+                    try {
+
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+
+                        e.printStackTrace();
+                    }
+                }
+*/
 
                 consumer.commitSync();;
-
                 log.info("Offsets have been committed!");
             }
         }
