@@ -30,10 +30,12 @@ import java.util.concurrent.TimeUnit;
 public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
-    public TwitterProducer()  {
+
+    public TwitterProducer() {
     }
 
     static public List<String> terms = Lists.newArrayList("IRIAM");
+
     public void run() {
 
         logger.info("Setup");
@@ -75,15 +77,17 @@ public class TwitterProducer {
                 client.stop();
             }
             if (jsonNode != null) {
+                var text = jsonNode.get("text").asText();
+                // ignore RT
                 kafkaProducer.send(new ProducerRecord<>("twitter_tweets",
-                        jsonNode.get("user").get("screen_name").toString(), jsonNode.toPrettyString()), (recordMetadata, e) -> {
-
+                        jsonNode.get("user").get("screen_name").toString(),
+                        jsonNode.toString()), (recordMetadata, e) -> {
                     if (e != null) {
                         logger.error("Something bad happened...", e);
                     }
                 });
-                logger.info(jsonNode.get("user").get("name").toString());
                 logger.info(jsonNode.toString());
+                logger.info(jsonNode.get("user").get("name").toString());
             }
         }
 
@@ -126,6 +130,7 @@ public class TwitterProducer {
         return builder.build();
 
     }
+
     public KafkaProducer<String, String> createKafkaProducer() {
         var bootstrapServers = "127.0.0.1:9092";
         // create Producer properties
