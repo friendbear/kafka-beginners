@@ -1,5 +1,9 @@
 package bearsworld.twitter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
@@ -26,10 +30,12 @@ import java.util.concurrent.TimeUnit;
 public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
-    public TwitterProducer()  {
+
+    public TwitterProducer() {
     }
 
-    static public List<String> terms = Lists.newArrayList("churi_p_irm", "@churi_p_irm");
+    static public List<String> terms = Lists.newArrayList("IRIAM");
+
     public void run() {
 
         logger.info("Setup");
@@ -56,22 +62,32 @@ public class TwitterProducer {
         }));
         // loop to send tweets to kafka
         // on a different thread, or multiple different threads....
+        ObjectMapper objectMapper = new ObjectMapper();
         while (!client.isDone()) {
-            String msg = null;
+            JsonNode jsonNode = null;
             try {
-                msg = msgQueue.poll(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
+                String msg = msgQueue.poll(5, TimeUnit.SECONDS);
+                // Parse JSON
+                if (msg != null) {
+                    jsonNode = objectMapper.readTree(msg);
+                }
+
+            } catch (InterruptedException | JsonProcessingException e) {
                 e.printStackTrace();
                 client.stop();
             }
-            if (msg != null) {
-                kafkaProducer.send(new ProducerRecord<>("twitter_tweets", null, msg), (recordMetadata, e) -> {
-
+            if (jsonNode != null) {
+                var text = jsonNode.get("text").asText();
+                // ignore RT
+                kafkaProducer.send(new ProducerRecord<>("twitter_tweets",
+                        jsonNode.get("user").get("screen_name").toString(),
+                        jsonNode.toString()), (recordMetadata, e) -> {
                     if (e != null) {
                         logger.error("Something bad happened...", e);
                     }
                 });
-                logger.info(msg);
+                logger.info(jsonNode.toString());
+                logger.info(jsonNode.get("user").get("name").toString());
             }
         }
 
@@ -114,6 +130,7 @@ public class TwitterProducer {
         return builder.build();
 
     }
+
     public KafkaProducer<String, String> createKafkaProducer() {
         var bootstrapServers = "127.0.0.1:9092";
         // create Producer properties
